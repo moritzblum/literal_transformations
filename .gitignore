@@ -9,5 +9,6 @@
 /dataSources.local.xml
 
 /.idea/
+/experiment/tmp*
 
 
