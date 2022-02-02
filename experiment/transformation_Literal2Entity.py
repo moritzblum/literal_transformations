@@ -53,11 +53,11 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
             duplicates.append(target)
     print('# objects connected to more than one subject', duplicates)
 
-    with open('duplicates.json', 'w') as out_duplicates:
+    with open('./duplicates.json', 'w') as out_duplicates:
         json.dump({'duplicates': duplicates}, out_duplicates)
 
     # create transformation and only contain objects occurring more than one time
-    with open(out_file) as literal_input:
+    with open(literal_file) as literal_input:
         with open('./tmp_literals_transformation_Literal2Entity_inc_duplicates.txt', 'w') as literal_out:
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')

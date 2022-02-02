@@ -29,5 +29,11 @@ python -u main.py dataset FB15k-237_Value2Shingles model ComplEx input_drop 0.2 
 
 
 # TransE
-# TODO
+python -u attributive_transe.py --dataset='../data/FB15k-237/' --outfile='../data/pykeen_transe_results_FB15k-237.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Literal2Entity/' --outfile='../data/pykeen_transe_results_FB15k-237_Literal2Entity.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity/' --outfile='../data/pykeen_transe_results_FB15k-237_Datatype2Entity.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity_00001000_00010000/' --outfile='../data/pykeen_transe_results_FB15k-237_Datatype2Entity_00001000_00010000.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity_00000000_00010000/' --outfile='../data/pykeen_transe_results_FB15k-237_Datatype2Entity_00000000_00010000.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity_00001000_10000000/' --outfile='../data/pykeen_transe_results_FB15k-237_Datatype2Entity_00001000_10000000.txt'
+python -u attributive_transe.py --dataset='../data/FB15k-237_Value2Shingles/' --outfile='../data/pykeen_transe_results_FB15k-237_Value2Shingles.txt'
 

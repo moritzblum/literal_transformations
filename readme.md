@@ -3,7 +3,7 @@
 
 ## Set-up 
 Our transformations are implemented in Python, as the LiteralE source code. To replicate our results, 
-you have to set up a Python 3.8 environment as described for [LiteralE](https://github.com/SmartDataAnalytics/LiteralE)
+you have to set up a Python 3.6 environment as described for [LiteralE](https://github.com/SmartDataAnalytics/LiteralE)
 and some additional packagestt. 
 We recommend using conda for package management and follow the following steps:
 1. `conda create --name literale python=3.6.13`
@@ -17,9 +17,14 @@ We recommend using conda for package management and follow the following steps:
 9. `python -m spacy download en && python -m spacy download en_core_web_md`
 10. `pip install rdflib`
 11. `pip install pykeen`
+Test the installation by training DistMult on FB15k-237 (the installation is working, if the loss is printed out and 
+the cpu usage goes up): `python main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True`
 
-Test the installation by training DistMult on FB15k-237 (the installation is working, if the loss is printed out and the cpu usage goes up): `python main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True`
-
+Furthermore, a second conda environment is required to preprocess the data for PyKeen. Therefore, 
+we recommend Python 3.8 (in the following, this environment is only used if explicitly mentioned):
+1. `conda create --name literal_transformations python=3.8`
+2. `conda install pyg -c pyg -c conda-forge`
+3. `pip install pykeen`
 
 ## Experiments 
 
@@ -73,7 +78,7 @@ This creates the files `FB15k-237_transformation_Literal2Entity.txt`, `FB15k-237
 * `cat FB15k-237_transformation_Value2Shingles.txt FB15k-237/train.txt > FB15k-237_Value2Shingles/train.txt`
 
 
-### Training (LiteralE code)
+### Training DistMult, LiteralE DistMult, ComplEx (LiteralE code)
 Clone the [LiteralE GitHub repository](https://github.com/SmartDataAnalytics/LiteralE) and place the recently created 
 folders `FB15k-237_Literal2Entity`, `FB15k-237_Datatype2Entity`, `FB15k-237_Datatype2Entity_filer_00000000_00010000`, 
 `FB15k-237_Datatype2Entity_00001000_00010000`, `FB15k-237_Datatype2Entity_filer_00001000_10000000` 
@@ -83,11 +88,8 @@ preprocess the files. This preprocessing just modifies the data structure, no in
 After that you can run our experiments by executing the commands in `LiteralE_mod/run.sh`.
 
 
-
-
-
-
-
+### Training TransE (PyKeen)
+Now, please use the `literal_transformations` conda environment by `conda activate literal_transformations`
 
 
 
