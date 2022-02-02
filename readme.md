@@ -16,6 +16,7 @@ We recommend using conda for package management and follow the following steps:
 8. `pip install torch===1.2.0`
 9. `python -m spacy download en && python -m spacy download en_core_web_md`
 10. `pip install rdflib`
+11. `pip install pykeen`
 
 Test the installation by training DistMult on FB15k-237 (the installation is working, if the loss is printed out and the cpu usage goes up): `python main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True`
 
