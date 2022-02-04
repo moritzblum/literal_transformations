@@ -1,3 +1,5 @@
+
+# --- FB15k-237 ---
 # DistMult
 python -u main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
 python -u main.py dataset FB15k-237_Literal2Entity model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
@@ -37,3 +39,13 @@ python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity_000
 python -u attributive_transe.py --dataset='../data/FB15k-237_Datatype2Entity_00001000_10000000/' --outfile='../data/pykeen_transe_results_FB15k-237_Datatype2Entity_00001000_10000000.txt'
 python -u attributive_transe.py --dataset='../data/FB15k-237_Value2Shingles/' --outfile='../data/pykeen_transe_results_FB15k-237_Value2Shingles.txt'
 
+
+# --- FB15k-237 ---
+# DistMult
+python -u main.py dataset FB15k model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t1 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t1_00001000_00010000 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t1_00000000_00010000 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t1_00001000_10000000 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t3 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True
+python -u main.py dataset FB15k-t5 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True

@@ -3,7 +3,7 @@ import os.path as osp
 
 from tabulate import tabulate
 
-dataset_dir = '../../data/FB15k-237-attributive_triples'
+dataset_dir = '../data/FB15k-237-attributive_triples'
 datasets = []#['FB15k-237-t1.txt',
             # 'FB15k-237-t3.txt',
             #'FB15k-237-t1_attributive_properties_base_filer_00001000_10000000.txt',
