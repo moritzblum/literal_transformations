@@ -15,11 +15,13 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
-                    value = value[1:-1]  # remove quotes
+                    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
+                        value = value[1:-1]  # remove quotes
                     literal_out.write(value + 'x' + datatype + '\n')
 
     # remove all objects occurring only once
-    os.system('sort ./tmp_literals_transformation_Literal2Entity_objects.txt > ./tmp_literals_transformation_Literal2Entity_objects_sorted.txt')
+    os.system(
+        'sort ./tmp_literals_transformation_Literal2Entity_objects.txt > ./tmp_literals_transformation_Literal2Entity_objects_sorted.txt')
     with open('./tmp_literals_transformation_Literal2Entity_objects_sorted.txt') as objects_in:
         object_counter = 0
         duplicates = []
@@ -42,9 +44,11 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
     duplicates_counter = {target: [] for target in duplicates}
     with open(literal_file) as literal_input:
         for line in literal_input:
+            print(line)
             subject, predicate, datatype, value = line[:-1].split('\t')
             if predicate in property_filter or not len(property_filter):
-                value = value[1:-1]  # remove quotes
+                if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
+                    value = value[1:-1]  # remove quotes
                 if value + 'x' + datatype in duplicates:
                     duplicates_counter[value + 'x' + datatype].append(subject)
     duplicates = []
@@ -62,7 +66,8 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
-                    value = value[1:-1]  # remove quotes
+                    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
+                        value = value[1:-1]  # remove quotes
                     if value + 'x' + datatype in duplicates:
                         literal_out.write(subject + '\t' + predicate + '\t' + value + 'x' + datatype + '\n')
 
@@ -70,6 +75,7 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
     os.system('rm ./tmp_literals_transformation_Literal2Entity_objects.txt')
     os.system('rm ./tmp_literals_transformation_Literal2Entity_objects_sorted.txt')
     os.system('rm ./tmp_literals_transformation_Literal2Entity_inc_duplicates.txt')
+    os.system('rm ./duplicates.json')
     print(f'Triples added by Literal2Entity transformation written to {out_file}:')
     num_lines = sum(1 for _ in open(f'{out_file}'))
     print(f'num_lines:{num_lines}')
@@ -82,6 +88,13 @@ if __name__ == '__main__':
     with open(filter_file) as in_filter:
         property_filter = json.load(in_filter)
 
-    transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
-                                  out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
-                                  property_filter=property_filter)
+    # transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
+    #                              out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
+    #                              property_filter=property_filter)
+
+    # transformation_Literal2Entity(literal_file='../data/YAGO3-10_literals.txt',
+    #                              out_file='../data/YAGO3-10_transformation_Literal2Entity.txt',
+    #                              property_filter=[])
+    transformation_Literal2Entity(literal_file='../data/LitWD48K_literals.txt',
+                                  out_file='../data/LitWD48K_transformation_Literal2Entity.txt',
+                                  property_filter=[])

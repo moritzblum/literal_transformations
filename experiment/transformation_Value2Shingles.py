@@ -80,6 +80,14 @@ if __name__ == '__main__':
     with open(filter_file) as in_filter:
         property_filter = json.load(in_filter)
 
-    transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
-                                  target_file=out_file,
-                                  property_filter=property_filter)
+    #transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+    #                              target_file=out_file,
+    #                              property_filter=property_filter)
+
+    #transformation_Value2Shingles(literal_file='../data/YAGO3-10_literals.txt',
+    #                              target_file='../data/YAGO3-10_transformation_Value2Shingles.txt',
+    #                              property_filter=[])
+
+    transformation_Value2Shingles(literal_file='../data/LitWD48K_literals.txt',
+                                  target_file='../data/LitWD48K_transformation_Value2Shingles.txt',
+                                  property_filter=[])
