@@ -17,6 +17,12 @@ We recommend using conda for package management and follow the following steps:
 9. `python -m spacy download en && python -m spacy download en_core_web_md`
 10. `pip install rdflib`
 11. `pip install pykeen`
+12. `pip install nltk`
+13. `pip install spacy`
+14. `python -m spacy download en_core_web_sm`
+15. `python -m spacy download de_core_news_sm`
+16. `python -m spacy download ru_core_news_sm`
+17. `python -m spacy download zh_core_web_md`
 Test the installation by training DistMult on FB15k-237 (the installation is working, if the loss is printed out and 
 the cpu usage goes up): `python main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True`
 

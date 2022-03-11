@@ -1,22 +1,51 @@
 import json
 import os
+import spacy
 
 """
 Applies the Literal2Entity transformation to a literal file as created by enrich_fb_15k-237_literals.py.
 """
 
 
+def preprocess_string(value, lowercasing, lemmaticeing, spacy_nlp, datatype):
+    print(value)
+    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
+        value = value[1:-1]  # remove quotes
+    if lowercasing:
+        value = value.lower()
+        # todo FB15k-237 had much more datatypes
+        # todo why does the string all have leading and ending white spaces (and quotation marks )
+        if lemmaticeing:
+            try:
+                doc = spacy_nlp[datatype](value)
+            except KeyError:
+                print('exception', datatype)
+                doc = spacy_nlp['@en'](value)
+            value = " ".join([token.lemma_ for token in doc])
+            value = value.rstrip().lstrip()
+    print(value)
+    return value
+
+
 def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
                                   out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
-                                  property_filter=None):
+                                  property_filter=None, preprocess_lowercasing=False, preprocess_lemmatizing=False):
+    spacy_nlp = {
+        'xsd:string': spacy.load("en_core_web_sm"),
+        '@en': spacy.load("en_core_web_sm"),
+        '@de': spacy.load("de_core_news_sm"),
+        '@ru': spacy.load("ru_core_news_sm"),
+        '@zh': spacy.load("zh_core_web_md")
+    }
+
     # create file with all potential objects created by this transformation
     with open(literal_file) as literal_input:
         with open('./tmp_literals_transformation_Literal2Entity_objects.txt', 'w') as literal_out:
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
-                    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
-                        value = value[1:-1]  # remove quotes
+                    value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
+                                              datatype)
                     literal_out.write(value + 'x' + datatype + '\n')
 
     # remove all objects occurring only once
@@ -44,11 +73,10 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
     duplicates_counter = {target: [] for target in duplicates}
     with open(literal_file) as literal_input:
         for line in literal_input:
-            print(line)
             subject, predicate, datatype, value = line[:-1].split('\t')
             if predicate in property_filter or not len(property_filter):
-                if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
-                    value = value[1:-1]  # remove quotes
+                value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
+                                          datatype)
                 if value + 'x' + datatype in duplicates:
                     duplicates_counter[value + 'x' + datatype].append(subject)
     duplicates = []
@@ -66,8 +94,8 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
-                    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
-                        value = value[1:-1]  # remove quotes
+                    value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
+                                              datatype)
                     if value + 'x' + datatype in duplicates:
                         literal_out.write(subject + '\t' + predicate + '\t' + value + 'x' + datatype + '\n')
 
@@ -95,6 +123,12 @@ if __name__ == '__main__':
     # transformation_Literal2Entity(literal_file='../data/YAGO3-10_literals.txt',
     #                              out_file='../data/YAGO3-10_transformation_Literal2Entity.txt',
     #                              property_filter=[])
-    transformation_Literal2Entity(literal_file='../data/LitWD48K_literals.txt',
-                                  out_file='../data/LitWD48K_transformation_Literal2Entity.txt',
-                                  property_filter=[])
+    # transformation_Literal2Entity(literal_file='../data/LitWD48K_literals.txt',
+    #                               out_file='../data/LitWD48K_transformation_Literal2Entity.txt',
+    #                               property_filter=[])
+
+    transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
+                                  out_file='../data/FB15k-237_transformation_Literal2Entity_low_lemm.txt',
+                                  property_filter=property_filter,
+                                  preprocess_lowercasing=True,
+                                  preprocess_lemmatizing=True)
