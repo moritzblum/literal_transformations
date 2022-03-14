@@ -23,6 +23,13 @@ We recommend using conda for package management and follow the following steps:
 15. `python -m spacy download de_core_news_sm`
 16. `python -m spacy download ru_core_news_sm`
 17. `python -m spacy download zh_core_web_md`
+18. `python -m spacy download fr_core_news_sm`
+19. `python -m spacy download it_core_news_sm`
+20. `python -m spacy download pl_core_news_sm`
+21. `python -m spacy download pt_core_news_sm`
+22. `python -m spacy download ja_core_news_sm`
+23. `python -m spacy download nl_core_news_sm`
+24. `python -m spacy download es_core_news_sm`
 Test the installation by training DistMult on FB15k-237 (the installation is working, if the loss is printed out and 
 the cpu usage goes up): `python main.py dataset FB15k-237 model DistMult input_drop 0.2 embedding_dim 100 batch_size 128 epochs 100 lr 0.001 process True`
 

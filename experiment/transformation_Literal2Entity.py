@@ -1,3 +1,4 @@
+import collections
 import json
 import os
 import spacy
@@ -8,23 +9,17 @@ Applies the Literal2Entity transformation to a literal file as created by enrich
 
 
 def preprocess_string(value, lowercasing, lemmaticeing, spacy_nlp, datatype):
-    print(value)
-    if value[0] in ['"', "'"] and value[:-1] in ['"', "'"]:
+    if value[0] in ['"', "'"] and value[-1] in ['"', "'"]:
         value = value[1:-1]  # remove quotes
     if lowercasing:
         value = value.lower()
-        # todo FB15k-237 had much more datatypes
-        # todo why does the string all have leading and ending white spaces (and quotation marks )
         if lemmaticeing:
             try:
                 doc = spacy_nlp[datatype](value)
+                value = ' '.join([token.lemma_ for token in doc]).rstrip().lstrip()
+                return value
             except KeyError:
-                print('exception', datatype)
-                doc = spacy_nlp['@en'](value)
-            value = " ".join([token.lemma_ for token in doc])
-            value = value.rstrip().lstrip()
-    print(value)
-    return value
+                return value
 
 
 def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
@@ -32,12 +27,20 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
                                   property_filter=None, preprocess_lowercasing=False, preprocess_lemmatizing=False):
     spacy_nlp = {
         'xsd:string': spacy.load("en_core_web_sm"),
-        '@en': spacy.load("en_core_web_sm"),
-        '@de': spacy.load("de_core_news_sm"),
-        '@ru': spacy.load("ru_core_news_sm"),
-        '@zh': spacy.load("zh_core_web_md")
+        'en': spacy.load("en_core_web_sm"),
+        'de': spacy.load("de_core_news_sm"),
+        'ru': spacy.load("ru_core_news_sm"),
+        'zh': spacy.load("zh_core_web_md"),
+        'fr': spacy.load('fr_core_news_sm'),
+        'it': spacy.load('it_core_news_sm'),
+        'pl': spacy.load('pl_core_news_sm'),
+        'pt': spacy.load('pt_core_news_sm'),
+        'ja': spacy.load('ja_core_news_sm'),
+        'nl': spacy.load('nl_core_news_sm'),
+        'es': spacy.load('es_core_news_sm')
     }
 
+    datatypes = []
     # create file with all potential objects created by this transformation
     with open(literal_file) as literal_input:
         with open('./tmp_literals_transformation_Literal2Entity_objects.txt', 'w') as literal_out:
@@ -47,6 +50,13 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
                     value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
                                               datatype)
                     literal_out.write(value + 'x' + datatype + '\n')
+                    datatypes.append(datatype)
+    freq_tags = collections.Counter(datatypes)
+    covered_tags = 0
+    all_tags = len(datatypes)
+    for key in spacy_nlp.keys():
+        covered_tags += freq_tags[key]
+    print(f'literals covered by lemmatization: {covered_tags/all_tags}% ({covered_tags} of {all_tags})')
 
     # remove all objects occurring only once
     os.system(
