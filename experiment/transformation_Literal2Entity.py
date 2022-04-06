@@ -1,45 +1,21 @@
 import collections
 import json
 import os
-import spacy
+import shutil
+import os.path as osp
+
+from utils import preprocess_string, spacy_nlp
 
 """
 Applies the Literal2Entity transformation to a literal file as created by enrich_fb_15k-237_literals.py.
 """
 
 
-def preprocess_string(value, lowercasing, lemmaticeing, spacy_nlp, datatype):
-    if value[0] in ['"', "'"] and value[-1] in ['"', "'"]:
-        value = value[1:-1]  # remove quotes
-    if lowercasing:
-        value = value.lower()
-        if lemmaticeing:
-            try:
-                doc = spacy_nlp[datatype](value)
-                value = ' '.join([token.lemma_ for token in doc]).rstrip().lstrip()
-                return value
-            except KeyError:
-                return value
-
-
-def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
+def transformation_Literal2Entity(transformation_name='FB15k-237_transformation_Literal2Entity.txt',
+                                    literal_file='../data/FB15k-237_literals.txt',
                                   out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
-                                  property_filter=None, preprocess_lowercasing=False, preprocess_lemmatizing=False):
-    spacy_nlp = {
-        'xsd:string': spacy.load("en_core_web_sm"),
-        'en': spacy.load("en_core_web_sm"),
-        'de': spacy.load("de_core_news_sm"),
-        'ru': spacy.load("ru_core_news_sm"),
-        'zh': spacy.load("zh_core_web_md"),
-        'fr': spacy.load('fr_core_news_sm'),
-        'it': spacy.load('it_core_news_sm'),
-        'pl': spacy.load('pl_core_news_sm'),
-        'pt': spacy.load('pt_core_news_sm'),
-        'ja': spacy.load('ja_core_news_sm'),
-        'nl': spacy.load('nl_core_news_sm'),
-        'es': spacy.load('es_core_news_sm')
-    }
-
+                                  property_filter=None, preprocess_lowercasing=False, preprocess_lemmatizing=False,
+                                  source_dataset='FB15k-237'):
     datatypes = []
     # create file with all potential objects created by this transformation
     with open(literal_file) as literal_input:
@@ -51,12 +27,14 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
                                               datatype)
                     literal_out.write(value + 'x' + datatype + '\n')
                     datatypes.append(datatype)
-    freq_tags = collections.Counter(datatypes)
-    covered_tags = 0
-    all_tags = len(datatypes)
-    for key in spacy_nlp.keys():
-        covered_tags += freq_tags[key]
-    print(f'literals covered by lemmatization: {covered_tags/all_tags}% ({covered_tags} of {all_tags})')
+    # stats
+    if preprocess_lemmatizing:
+        freq_tags = collections.Counter(datatypes)
+        covered_tags = 0
+        all_tags = len(datatypes)
+        for key in spacy_nlp.keys():
+            covered_tags += freq_tags[key]
+        print(f'literals covered by lemmatization: {covered_tags / all_tags}% ({covered_tags} of {all_tags})')
 
     # remove all objects occurring only once
     os.system(
@@ -87,7 +65,7 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
             if predicate in property_filter or not len(property_filter):
                 value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
                                           datatype)
-                if value + 'x' + datatype in duplicates:
+                if value + 'x' + datatype in duplicates and value != '':
                     duplicates_counter[value + 'x' + datatype].append(subject)
     duplicates = []
     for target in duplicates_counter.keys():
@@ -116,19 +94,26 @@ def transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
     os.system('rm ./duplicates.json')
     print(f'Triples added by Literal2Entity transformation written to {out_file}:')
     num_lines = sum(1 for _ in open(f'{out_file}'))
+
     print(f'num_lines:{num_lines}')
+
+    shutil.copytree(osp.join('../data', source_dataset), osp.join('../data', transformation_name))
+
     return num_lines
 
 
 if __name__ == '__main__':
-    filter_file = '../data/attributive_properties_filter_key.json'
+    # attributive_properties_filter_key
+    filter_file = '../data/attributive_properties.json'
 
     with open(filter_file) as in_filter:
         property_filter = json.load(in_filter)
 
-    # transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
-    #                              out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
-    #                              property_filter=property_filter)
+    transformation_Literal2Entity(transformation_name='FB15k-237_transformation_Literal2Entity',
+                                  literal_file='../data/FB15k-237_literals.txt',
+                                  out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
+                                  property_filter=property_filter,
+                                  source_dataset='FB15k-237')
 
     # transformation_Literal2Entity(literal_file='../data/YAGO3-10_literals.txt',
     #                              out_file='../data/YAGO3-10_transformation_Literal2Entity.txt',
@@ -142,3 +127,9 @@ if __name__ == '__main__':
                                   property_filter=property_filter,
                                   preprocess_lowercasing=True,
                                   preprocess_lemmatizing=True)
+
+    transformation_Literal2Entity(literal_file='../data/FB15k-237_literals.txt',
+                                  out_file='../data/FB15k-237_transformation_Literal2Entity_low.txt',
+                                  property_filter=property_filter,
+                                  preprocess_lowercasing=True,
+                                  preprocess_lemmatizing=False)

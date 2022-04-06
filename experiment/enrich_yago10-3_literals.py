@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 
 """
@@ -16,20 +18,20 @@ if __name__ == '__main__':
     textual_data[3] = 'xsd:string'
     textual_data = textual_data[[0, 2, 1, 3]]
     textual_data.columns = [0, 1, 2, 3]
-    print(textual_data)
-    textual_data.to_csv('../data/test.txt', sep=';', header=None, index=False)
-
-    with open('../data/YAGO3-10/textual_data.txt') as yago_in:
-        for line in yago_in.readlines():
-            subject, literal = line[:-1].split('\t')
-            if 'Concepción_Province,_Peru' in line:
-                print(subject, '<<<<and>>>>',literal)
-
-
 
     numerical_data[3] = 'xsd:date'
-    print(numerical_data)
 
     literal_data = pd.concat([numerical_data, textual_data], axis=0, ignore_index=True)[[0, 1, 3, 2]]
     literal_data.to_csv('../data/YAGO3-10_literals.txt', sep='\t', header=None, index=False)
+
+    os.system("cat ../data/YAGO3-10/numerical_data_train.txt ../data/YAGO3-10/numerical_data_test.txt > ../data/YAGO3-10/numerical_data.txt")
+    if not os.path.exists('../data/YAGO3-10/literals'):
+        os.mkdir('../data/YAGO3-10/literals')
+    os.system("cp ../data/YAGO3-10/numerical_data.txt ../data/YAGO3-10/literals/numerical_literals.txt ")
+
+    textual_data = textual_data.drop(3, 1)
+
+    textual_data.to_csv('../data/YAGO3-10/literals/text_literals.txt', sep="\t", index=False, header=False)
+
+
 

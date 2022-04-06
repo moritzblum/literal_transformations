@@ -31,7 +31,7 @@ def transformation_Datatype2Entity(literal_file='../data/FB15k-237_literals.txt'
 if __name__ == '__main__':
     # create t1 without filter
     #filter_file = '../data/attributive_properties_filter_key.json'
-    #out_file = '../data/FB15k-237_transformation_Datatype2Literal.txt'
+    #out_file = '../data/FB15k-237_transformation_Datatype2Entity.txt'
     #with open(filter_file) as in_filter:
     #    property_filter = json.load(in_filter)
     #transformation_Datatype2Entity(literal_file='../data/FB15k-237_literals.txt',
@@ -40,7 +40,7 @@ if __name__ == '__main__':
 
     # process according to filter
     #filter_file = '../data/attributive_properties_base_filer_00000000_00010000.json'
-    #out_file = '../data/FB15k-237_transformation_Datatype2Literal_00000000_00010000.txt'
+    #out_file = '../data/FB15k-237_transformation_Datatype2Entity_00000000_00010000.txt'
     #with open(filter_file) as in_filter:
     #    property_filter = json.load(in_filter)
 
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     #                               property_filter=property_filter)
 
     #filter_file = '../data/attributive_properties_base_filer_00001000_00010000.json'
-    #out_file = '../data/FB15k-237_transformation_Datatype2Literal_00001000_00010000.txt'
+    #out_file = '../data/FB15k-237_transformation_Datatype2Entity_00001000_00010000.txt'
     #with open(filter_file) as in_filter:
     #    property_filter = json.load(in_filter)
 
@@ -58,7 +58,7 @@ if __name__ == '__main__':
     #                               property_filter=property_filter)
 
     #filter_file = '../data/attributive_properties_base_filer_00010000_10000000.json'
-    #out_file = '../data/FB15k-237_transformation_Datatype2Literal_00010000_10000000.txt'
+    #out_file = '../data/FB15k-237_transformation_Datatype2Entity_00010000_10000000.txt'
     #with open(filter_file) as in_filter:
     #    property_filter = json.load(in_filter)
 
@@ -67,9 +67,9 @@ if __name__ == '__main__':
     #                               property_filter=property_filter)
 
     #transformation_Datatype2Entity(literal_file='../data/YAGO3-10_literals.txt',
-    #                               out_file='../data/YAGO3-10_transformation_Datatype2Literal.txt',
+    #                               out_file='../data/YAGO3-10_transformation_Datatype2Entity.txt',
     #                               property_filter=[])
 
     transformation_Datatype2Entity(literal_file='../data/LitWD48K_literals.txt',
-                                   out_file='../data/LitWD48K_transformation_Datatype2Literal.txt',
+                                   out_file='../data/LitWD48K_transformation_Datatype2Entity.txt',
                                    property_filter=[])

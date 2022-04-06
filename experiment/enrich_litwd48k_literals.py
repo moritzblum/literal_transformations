@@ -65,7 +65,6 @@ if __name__ == '__main__':
                 try:
                     subject, predicate, datatype, value = line[:-1].split('\t')
                 except ValueError:
-                    print(line)
                     continue
                 if value == '':
                     continue
@@ -85,10 +84,23 @@ if __name__ == '__main__':
     os.system('rm train_tmp.txt')
     os.system('rm train_types.txt')
 
+    # copy, reformat, move literal files for literale
+    if not os.path.exists('../data/LitWD48K/literals'):
+        os.mkdir('../data/LitWD48K/literals')
 
+    en_literals = en_literals.drop(2, 1)
+    en_literals.to_csv('../data/LitWD48K/literals/text_literals.txt', sep="\t", index=False, header=False)
 
-
-
+    with open('../data/LitWD48K/literals/numerical_literals.txt', 'w') as out_file:
+        for index, row in numeric_literals.iterrows():
+            num = row[3]
+            try:
+                num = float(num)
+                out_file.write('\t'.join([row[0], row[1], str(num)]) + '\n')
+            except ValueError:
+                print('passed')
+                print(num)
+                pass
 
 
 

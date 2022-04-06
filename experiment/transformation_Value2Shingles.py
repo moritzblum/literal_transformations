@@ -2,6 +2,7 @@ import json
 import os
 import re
 from typing import List
+from utils import preprocess_string, spacy_nlp
 
 """
 Applies the Value2Shingles transformation to a literal file as created by enrich_fb_15k-237_literals.py.
@@ -10,18 +11,22 @@ Applies the Value2Shingles transformation to a literal file as created by enrich
 
 # consider only literals which are produce meaningful shingles
 def get_shingles(input_string: str, size: int) -> List[str]:
-    return [input_string[index:index+size] for index in range(len(input_string) - size + 1)]
+    return [input_string[index:index + size] for index in range(len(input_string) - size + 1)]
 
 
 def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
                                   target_file='../data/FB15k-237_transformation_Value2Shingles.txt',
-                                  property_filter=None):
+                                  property_filter=None,
+                                  preprocess_lowercasing=False, preprocess_lemmatizing=False):
+
 
     with open(literal_file) as literal_input:
         with open('./tmp_shingles.txt', 'w') as literal_out:
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
+                    value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
+                                              datatype)
                     for shingle in get_shingles(value, 7):
                         literal_out.write(shingle + '\n')
 
@@ -50,6 +55,8 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
+                    value = preprocess_string(value, preprocess_lowercasing, preprocess_lemmatizing, spacy_nlp,
+                                              datatype)
                     for shingle in get_shingles(value, 7):
                         if shingle in interesting_shingles:
                             literal_out.write(subject + '\t' + predicate + '\t' + shingle + '\n')
@@ -65,7 +72,6 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
 
 
 if __name__ == '__main__':
-
     # create filter without http://rdf.freebase.com/key and _id properties
     with open('../data/attributive_properties.json') as in_filter:
         property_filter = json.load(in_filter)
@@ -74,20 +80,32 @@ if __name__ == '__main__':
     with open('../data/attributive_properties_filter_key.json', 'w') as out_filter:
         json.dump(property_filter, out_filter)
 
-    filter_file = '../data/attributive_properties_filter_key.json'
+    filter_file = '../data/attributive_properties.json'
     out_file = '../data/FB15k-237_transformation_Value2Shingles.txt'
 
     with open(filter_file) as in_filter:
         property_filter = json.load(in_filter)
 
-    #transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+    # transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
     #                              target_file=out_file,
     #                              property_filter=property_filter)
 
-    #transformation_Value2Shingles(literal_file='../data/YAGO3-10_literals.txt',
+    # transformation_Value2Shingles(literal_file='../data/YAGO3-10_literals.txt',
     #                              target_file='../data/YAGO3-10_transformation_Value2Shingles.txt',
     #                              property_filter=[])
 
-    transformation_Value2Shingles(literal_file='../data/LitWD48K_literals.txt',
-                                  target_file='../data/LitWD48K_transformation_Value2Shingles.txt',
-                                  property_filter=[])
+    # transformation_Value2Shingles(literal_file='../data/LitWD48K_literals.txt',
+    #                              target_file='../data/LitWD48K_transformation_Value2Shingles.txt',
+    #                              property_filter=[])
+
+    transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+                                  target_file='../data/FB15k-237_transformation_Value2Shingle_low_lemm.txt',
+                                  property_filter=property_filter,
+                                  preprocess_lowercasing=True,
+                                  preprocess_lemmatizing=True)
+
+    transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+                                  target_file='../data/FB15k-237_transformation_Value2Shingle_low.txt',
+                                  property_filter=property_filter,
+                                  preprocess_lowercasing=True,
+                                  preprocess_lemmatizing=False)
