@@ -233,6 +233,3 @@ if __name__ == '__main__':
                     with open(osp.join(data_dir, transformation_dataset), 'r') as transformation_triples_in:
                         for line in transformation_triples_in.readlines():
                             train_file.write(line)
-
-
-
