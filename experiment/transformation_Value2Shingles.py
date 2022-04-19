@@ -3,6 +3,7 @@ import os
 import re
 from typing import List
 from utils import preprocess_string, spacy_nlp
+import time
 
 """
 Applies the Value2Shingles transformation to a literal file as created by enrich_fb_15k-237_literals.py.
@@ -11,17 +12,21 @@ Applies the Value2Shingles transformation to a literal file as created by enrich
 
 # consider only literals which are produce meaningful shingles
 def get_shingles(input_string: str, size: int) -> List[str]:
+    if input_string is None:
+        return []
     return [input_string[index:index + size] for index in range(len(input_string) - size + 1)]
 
 
 def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
                                   target_file='../data/FB15k-237_transformation_Value2Shingles.txt',
                                   property_filter=None,
-                                  preprocess_lowercasing=False, preprocess_lemmatizing=False):
+                                  preprocess_lowercasing=False,
+                                  preprocess_lemmatizing=False):
 
+    timestr = time.strftime("%Y%m%d-%H%M%S")
 
     with open(literal_file) as literal_input:
-        with open('./tmp_shingles.txt', 'w') as literal_out:
+        with open(f'./tmp_shingles_{timestr}.txt', 'w') as literal_out:
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
@@ -30,12 +35,12 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
                     for shingle in get_shingles(value, 7):
                         literal_out.write(shingle + '\n')
 
-    os.system('sort ./tmp_shingles.txt | uniq -c > ./tmp_shingles_count.txt')
+    os.system(f'sort ./tmp_shingles_{timestr}.txt | uniq -c > ./tmp_shingles_count_{timestr}.txt')
 
     max_num_triples = 0
     interesting_shingles = []
     prog_count = re.compile("(\s+\d+\s)")
-    with open('./tmp_shingles_count.txt') as shinges_count_in:
+    with open(f'./tmp_shingles_count_{timestr}.txt') as shinges_count_in:
         for line in shinges_count_in.readlines():
             line = line[:-1]
             re_count = prog_count.search(line)
@@ -51,7 +56,7 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
     print('# frequent shingles:', len(interesting_shingles))
 
     with open(literal_file) as literal_input:
-        with open('./tmp_literals_transformation_Value2Shingles_inc_duplicates.txt', 'w') as literal_out:
+        with open(f'./tmp_literals_transformation_Value2Shingles_inc_duplicates_{timestr}.txt', 'w') as literal_out:
             for line in literal_input:
                 subject, predicate, datatype, value = line[:-1].split('\t')
                 if predicate in property_filter or not len(property_filter):
@@ -61,11 +66,11 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
                         if shingle in interesting_shingles:
                             literal_out.write(subject + '\t' + predicate + '\t' + shingle + '\n')
 
-    os.system(f"awk '!seen[$0]++' ./tmp_literals_transformation_Value2Shingles_inc_duplicates.txt > {target_file}")
-    os.system('rm ./tmp_literals_transformation_Value2Shingles_inc_duplicates.txt')
-    os.system('rm ./tmp_shingles.txt')
-    os.system('rm ./tmp_shingles_count.txt')
-    print(f'Triples added by Value2Shingles transformation written to {property_filter}:')
+    os.system(f"awk '!seen[$0]++' ./tmp_literals_transformation_Value2Shingles_inc_duplicates_{timestr}.txt > {target_file}")
+    os.system(f'rm ./tmp_literals_transformation_Value2Shingles_inc_duplicates_{timestr}.txt')
+    os.system(f'rm ./tmp_shingles_{timestr}.txt')
+    os.system(f'rm ./tmp_shingles_count_{timestr}.txt')
+    print(f'Triples added by Value2Shingles transformation written:')
     num_lines = sum(1 for _ in open(f'{target_file}'))
     print(f'num_lines:{num_lines}')
     return num_lines
@@ -73,22 +78,23 @@ def transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
 
 if __name__ == '__main__':
     # create filter without http://rdf.freebase.com/key and _id properties
-    with open('../data/attributive_properties.json') as in_filter:
-        property_filter = json.load(in_filter)
-        property_filter = [p for p in property_filter if 'http://rdf.freebase.com/key' not in p and '_id' not in p]
+    #with open('../data/attributive_properties.json') as in_filter:
+    #    property_filter = json.load(in_filter)
+    #    property_filter = [p for p in property_filter if 'http://rdf.freebase.com/key' not in p and '_id' not in p]
+    #
+    #with open('../data/attributive_properties_filter_key.json', 'w') as out_filter:
+    #    json.dump(property_filter, out_filter)
 
-    with open('../data/attributive_properties_filter_key.json', 'w') as out_filter:
-        json.dump(property_filter, out_filter)
-
-    filter_file = '../data/attributive_properties.json'
-    out_file = '../data/FB15k-237_transformation_Value2Shingles.txt'
+    filter_file = '../data/attributive_properties_filter_key.json'
 
     with open(filter_file) as in_filter:
         property_filter = json.load(in_filter)
 
-    # transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
-    #                              target_file=out_file,
-    #                              property_filter=property_filter)
+    transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+                                  target_file='../data/FB15k-237_transformation_Value2Shingles.txt',
+                                  property_filter=property_filter,
+                                  preprocess_lowercasing=False,
+                                  preprocess_lemmatizing=False)
 
     # transformation_Value2Shingles(literal_file='../data/YAGO3-10_literals.txt',
     #                              target_file='../data/YAGO3-10_transformation_Value2Shingles.txt',
@@ -98,14 +104,14 @@ if __name__ == '__main__':
     #                              target_file='../data/LitWD48K_transformation_Value2Shingles.txt',
     #                              property_filter=[])
 
-    transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
-                                  target_file='../data/FB15k-237_transformation_Value2Shingle_low_lemm.txt',
-                                  property_filter=property_filter,
-                                  preprocess_lowercasing=True,
-                                  preprocess_lemmatizing=True)
+    #transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
+    #                              target_file='../data/FB15k-237_transformation_Value2Shingles_low_lemm.txt',
+    #                              property_filter=property_filter,
+    #                              preprocess_lowercasing=True,
+    #                              preprocess_lemmatizing=True)
 
     transformation_Value2Shingles(literal_file='../data/FB15k-237_literals.txt',
-                                  target_file='../data/FB15k-237_transformation_Value2Shingle_low.txt',
+                                  target_file='../data/FB15k-237_transformation_Value2Shingles_low.txt',
                                   property_filter=property_filter,
                                   preprocess_lowercasing=True,
                                   preprocess_lemmatizing=False)

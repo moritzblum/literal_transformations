@@ -2,11 +2,6 @@ import os
 
 import pandas as pd
 
-"""
-Download and place in YAGO3-10
-Relational data from: https://github.com/TimDettmers/ConvE/raw/master/YAGO3-10.tar.gz
-Literal data from: https://github.com/pouyapez/mkbe/tree/master/datasets/YAGO-10%20plus
-"""
 
 if __name__ == '__main__':
     textual_data = pd.read_csv('../data/YAGO3-10/textual_data.txt', sep='\\t', header=None)

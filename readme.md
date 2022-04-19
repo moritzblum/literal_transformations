@@ -42,23 +42,21 @@ we recommend Python 3.8 (in the following, this environment is only used if expl
 ## Experiments 
 
 ### Generate transformed dataset
+All following scripts to create the literal transformation datasets are contained in the `experiment` directory.
 
-Download and extract the [FB15k-237 Dataset](https://www.microsoft.com/en-us/download/confirmation.aspx?id=52312) and 
-put the data into the directory `data/FB15k-237/`. The literals must be extracted from Freebase; therefore, 
-this dataset is also required. Place  the [Freebase Dataset](https://developers.google.com/freebase) file in 
-`data/`.
+Run `setup.py -init` to set up the dataset directory. The script will automatically create the folder `data` and downloads the 
+required datasets. The transformations run on tsv files containing the literals for the link prediction datasets, 
+filtered to the relevant attributive triples to increase performance. These tsv files can be created by running
+`enrich_fb15k-237_literals.py`, `enrich_yago10-3_literals.py`, and `enrich_litwd48k_literals.py` or can be downloaded 
+form [Dropbox](https://www.dropbox.com/scl/fo/jn3frofkpush32aui5at0/h?dl=0&rlkey=23nwnk8bnl4q9b7t0fj4pa064) and placed
+inside the `data` folder.
 
-First of all, extract all triples from the source Freebase graph with its subject contained in FB15k-237 to reduce the 
-set of potentially relevant triples and then create a file containing only the literals: execute 
-`python enrich_fb15k-237_literals.py` in the directory `experiment`. This creates the files 
-`data/FB15k-237_freebase_reduced.txt` and `data/FB15k-237_literals.txt`.
-
-The code to transform thr literls is contained in the `experiment` directory, too. The transformation can be applied 
-to generate the datasets with the following commands:
+The transformation can be applied to generate the datasets with the following scripts:
 * Literal2Entity: `python transformation_Literal2Entity.py` 
 * Datatype2Entity: `python transformation_Datatype2Entity.py` 
 * Shingles2Entity: `python transformation_Shingles2Entity.py` 
-This creates the files `FB15k-237_transformation_Literal2Entity.txt`, `FB15k-237_transformation_Datatype2Entity.txt` and `FB15k-237_transformation_Value2Shingles.txt` in `/data`. To create the dataset training files for the LiteralE code, the relational FB15k-237 triples have now to be merged with the transformed literal data and test and validation files have to be added:
+To create all transformation datasets, simply run `setup.py -transform`
+
 
 #### Literal2Entity
 * `mkdir FB15k-237_Literal2Entity`

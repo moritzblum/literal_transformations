@@ -1,6 +1,8 @@
 import os.path as osp
 from rdflib import Graph
 
+from experiment.setup import data_dir
+
 """
 Extract Literals form FB: First extract all triples with subject contained in a 
 link prediction dataset (e.g. FB15k-237) as potentially relevant triples, then extract all attributive triples 
@@ -9,7 +11,8 @@ and write them reformatted to file.
 
 
 def extract_relevant_triples(link_prediction_dataset='../data/FB15k-237/',
-                             out_file='../data/FB15k-237_freebase_reduced.txt', fb_file='../data/freebase-rdf-latest'):
+                             out_file='../data/FB15k-237_freebase_reduced.txt',
+                             fb_file='../data/freebase-rdf-latest'):
     """
     Extract all triples from the source Freebase graph with it's subject contained in a link prediction dataset (e.g. FB15k-237) 
     to reduce the size of potentially relevant triples.
@@ -28,6 +31,12 @@ def extract_relevant_triples(link_prediction_dataset='../data/FB15k-237/',
 
     # output all triples where the subject in contained in the FB15k-237 dataset
     literals_out = open(out_file, 'w')
+
+    if not osp.exists(osp.join(data_dir, 'freebase-rdf-latest')):
+        raise FileNotFoundError(
+            "Please download the latest freebase dump drom `https://developers.google.com/freebase` and place the unpacked file in",
+            data_dir)
+
     with open(fb_file) as fb_in:
         for line in fb_in:
             line = line[:-1]  # remove linebreak
@@ -39,7 +48,8 @@ def extract_relevant_triples(link_prediction_dataset='../data/FB15k-237/',
 def extract_attributive_triples(out_file='../data/FB15k-237_literals.txt',
                                 relevant_triples_file='../data/FB15k-237_freebase_reduced.txt'):
     """
-    Filters to a set of attributive triples, re-formats the literals (tsv: subject, predicate, datatype, value), and writes them to file.
+    Filters to a set of attributive triples, re-formats the literals (tsv: subject, predicate, datatype, value),
+    and writes them to file.
     @return: None
     """
 
@@ -74,7 +84,8 @@ def extract_attributive_triples(out_file='../data/FB15k-237_literals.txt',
 
 
 if __name__ == '__main__':
-    # extract all potentially relevant triples from freebase to reduce the dataset size
-    extract_relevant_triples()
-    # filter the n-triple file for attributive triples and simplify reformat
-    extract_attributive_triples()
+    if not osp.exists(osp.join(data_dir, 'FB15k-237_literals.txt')):
+        # extract all potentially relevant triples from freebase to reduce the dataset size
+        extract_relevant_triples()
+        # filter the n-triple file for attributive triples and simplify reformat
+        extract_attributive_triples()

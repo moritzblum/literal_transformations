@@ -1,3 +1,6 @@
+from typing import List
+import os.path as osp
+import requests
 import spacy
 
 spacy_nlp = {
@@ -27,6 +30,10 @@ def preprocess_string(value, lowercasing, lemmaticeing, spacy_nlp, datatype):
                 return value
             except KeyError:
                 return value
-    else:
-        return value
 
+    return value
+
+def download_files(urls: List[List], target_dir: str) -> None:
+    for file, url in urls:
+        r = requests.get(url, allow_redirects=True)
+        open(osp.join(target_dir, file), 'wb').write(r.content)
