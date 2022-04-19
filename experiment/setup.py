@@ -99,87 +99,92 @@ if __name__ == '__main__':
             property_filter_fb_00010000_10000000 = json.load(in_filter)
 
         transformation_Literal2Entity(transformation_name='FB15k-237_transformation_Literal2Entity',
-                                      data_dir=data_dir,
                                       literal_file=literal_file_FB15k237,
-                                      out_file='../data/FB15k-237_transformation_Literal2Entity.txt',
                                       property_filter=property_filter_fb,
                                       source_dataset='FB15k-237')
 
         transformation_Literal2Entity(transformation_name='YAGO3-10_transformation_Literal2Entity',
-                                      data_dir=data_dir,
                                       literal_file=literal_file_YAGO310,
-                                      out_file='../data/YAGO3-10_transformation_Literal2Entity.txt',
-                                      property_filter=[])
+                                      property_filter=[],
+                                      source_dataset='YAGO3-10')
 
         transformation_Literal2Entity(transformation_name='LitWD48K_transformation_Literal2Entity',
-                                      data_dir=data_dir,
                                       literal_file=literal_file_LitWD48K,
-                                      out_file='../data/LitWD48K_transformation_Literal2Entity.txt',
-                                      property_filter=[])
+                                      property_filter=[],
+                                      source_dataset='LitWD48K')
 
         transformation_Literal2Entity(transformation_name='FB15k-237_transformation_Literal2Entity_low_lemm',
-                                      data_dir=data_dir,
                                       literal_file=literal_file_FB15k237,
-                                      out_file='../data/FB15k-237_transformation_Literal2Entity_low_lemm.txt',
                                       property_filter=property_filter_fb,
                                       preprocess_lowercasing=True,
-                                      preprocess_lemmatizing=True)
+                                      preprocess_lemmatizing=True,
+                                      source_dataset='FB15k-237')
 
         transformation_Literal2Entity(transformation_name='FB15k-237_transformation_Literal2Entity_low',
-                                      data_dir=data_dir,
                                       literal_file=literal_file_FB15k237,
-                                      out_file='../data/FB15k-237_transformation_Literal2Entity_low.txt',
                                       property_filter=property_filter_fb,
                                       preprocess_lowercasing=True,
-                                      preprocess_lemmatizing=False)
+                                      preprocess_lemmatizing=False,
+                                      source_dataset='FB15k-237')
 
-        transformation_Datatype2Entity(literal_file=literal_file_FB15k237,
-                                       out_file='../data/FB15k-237_transformation_Datatype2Entity.txt',
-                                       property_filter=property_filter_fb)
+        transformation_Datatype2Entity(transformation_name='FB15k-237_transformation_Datatype2Entity.txt',
+                                       literal_file=literal_file_FB15k237,
+                                       property_filter=property_filter_fb,
+                                       source_dataset='FB15k-237')
 
-        transformation_Datatype2Entity(literal_file=literal_file_FB15k237,
-                                       out_file='../data/FB15k-237_transformation_Datatype2Entity_00000000_00010000.txt',
-                                       property_filter=property_filter_fb_00000000_00010000)
+        transformation_Datatype2Entity(transformation_name='FB15k-237_transformation_Datatype2Entity_00000000_00010000.txt',
+                                       literal_file=literal_file_FB15k237,
+                                       property_filter=property_filter_fb_00000000_00010000,
+                                       source_dataset='FB15k-237')
 
-        transformation_Datatype2Entity(literal_file=literal_file_FB15k237,
-                                       out_file='../data/FB15k-237_transformation_Datatype2Entity_00001000_00010000.txt',
-                                       property_filter=property_filter_fb_00001000_00010000)
+        transformation_Datatype2Entity(transformation_name='FB15k-237_transformation_Datatype2Entity_00001000_00010000.txt',
+                                       literal_file=literal_file_FB15k237,
+                                       property_filter=property_filter_fb_00001000_00010000,
+                                       source_dataset='FB15k-237')
 
-        transformation_Datatype2Entity(literal_file=literal_file_FB15k237,
-                                       out_file='../data/FB15k-237_transformation_Datatype2Entity_00010000_10000000.txt',
-                                       property_filter=property_filter_fb_00010000_10000000)
+        transformation_Datatype2Entity(transformation_name='FB15k-237_transformation_Datatype2Entity_00010000_10000000.txt',
+                                       literal_file=literal_file_FB15k237,
+                                       property_filter=property_filter_fb_00010000_10000000,
+                                       source_dataset='FB15k-237')
 
-        transformation_Datatype2Entity(literal_file=literal_file_YAGO310,
-                                       out_file='../data/YAGO3-10_transformation_Datatype2Entity.txt',
-                                       property_filter=[])
+        transformation_Datatype2Entity(transformation_name='YAGO3-10_transformation_Datatype2Entity.txt',
+                                       literal_file=literal_file_YAGO310,
+                                       property_filter=[],
+                                       source_dataset='YAGO3-10')
 
-        transformation_Datatype2Entity(literal_file=literal_file_LitWD48K,
-                                       out_file='../data/LitWD48K_transformation_Datatype2Entity.txt',
-                                       property_filter=[])
+        transformation_Datatype2Entity(transformation_name='LitWD48K_transformation_Datatype2Entity.txt',
+                                       literal_file=literal_file_LitWD48K,
+                                       property_filter=[],
+                                       source_dataset='LitWD48K')
 
-        transformation_Value2Shingles(literal_file=literal_file_FB15k237,
-                                      target_file='../data/FB15k-237_transformation_Value2Shingles.txt',
-                                      property_filter=property_filter_fb)
+        transformation_Value2Shingles(transformation_name='FB15k-237_transformation_Value2Shingles.txt',
+                                      literal_file=literal_file_FB15k237,
+                                      property_filter=property_filter_fb,
+                                      source_dataset='FB15k-237')
 
-        transformation_Value2Shingles(literal_file=literal_file_YAGO310,
-                                      target_file='../data/YAGO3-10_transformation_Value2Shingles.txt',
-                                      property_filter=[])
+        transformation_Value2Shingles(transformation_name='YAGO3-10_transformation_Value2Shingles.txt',
+                                      literal_file=literal_file_YAGO310,
+                                      property_filter=[],
+                                      source_dataset='YAGO3-10')
 
-        transformation_Value2Shingles(literal_file=literal_file_LitWD48K,
-                                      target_file='../data/LitWD48K_transformation_Value2Shingles.txt',
-                                      property_filter=[])
+        transformation_Value2Shingles(transformation_name='LitWD48K_transformation_Value2Shingles.txt',
+                                      literal_file=literal_file_LitWD48K,
+                                      property_filter=[],
+                                      source_dataset='LitWD48K')
 
-        transformation_Value2Shingles(literal_file=literal_file_FB15k237,
-                                      target_file='../data/FB15k-237_transformation_Value2Shingles_low_lemm.txt',
+        transformation_Value2Shingles(transformation_name='FB15k-237_transformation_Value2Shingles_low_lemm.txt',
+                                      literal_file=literal_file_FB15k237,
                                       property_filter=property_filter_fb,
                                       preprocess_lowercasing=True,
-                                      preprocess_lemmatizing=True)
+                                      preprocess_lemmatizing=True,
+                                      source_dataset='FB15k-237')
 
-        transformation_Value2Shingles(literal_file=literal_file_FB15k237,
-                                      target_file='../data/FB15k-237_transformation_Value2Shingles_low.txt',
+        transformation_Value2Shingles(transformation_name='FB15k-237_transformation_Value2Shingles_low.txt',
+                                      literal_file=literal_file_FB15k237,
                                       property_filter=property_filter_fb,
                                       preprocess_lowercasing=True,
-                                      preprocess_lemmatizing=False)
+                                      preprocess_lemmatizing=False,
+                                      source_dataset='FB15k-237')
 
     if args.export:
         # dic: source dataset -> transformation
